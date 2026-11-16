@@ -7,26 +7,57 @@ const cfg=window.KGP_CONFIG||{};
 if(cfg.telegramBotUsername&&/^[A-Za-z][A-Za-z0-9_]{4,31}$/.test(cfg.telegramBotUsername)){
   document.querySelectorAll('[data-telegram-bot]').forEach(a=>{a.href='https://t.me/'+cfg.telegramBotUsername;a.hidden=false;});
 }
+// The site is static. A message is prepared on the client; sending occurs in a messenger.
 document.querySelectorAll('form[data-lead]').forEach(form=>{
-  const started=Date.now();
-  form.addEventListener('submit',async e=>{
-    e.preventDefault();if(!form.reportValidity())return;
-    const data=Object.fromEntries(new FormData(form).entries());
-    const message={name:String(data['Имя']||''),phone:String(data['Телефон']||''),email:String(data['Почта']||''),service:String(data['Услуга']||''),locality:String(data['Населённый пункт']||''),comment:String(data['Комментарий']||''),website:String(data.company_website||''),consent:!!data.consent,elapsedMs:Date.now()-started,page:location.pathname};
-    const status=form.querySelector('.form-status');const btn=form.querySelector('button[type=submit]');
-    const setStatus=s=>{if(status)status.textContent=s;notify(s);};
-    if(message.website){setStatus('Спасибо за обращение.');return;}
-    if(!cfg.apiBase){setStatus('Сервер отправки заявок ещё не подключён. Напишите на gazstroi46@mail.ru или позвоните: 8 (910) 731-02-00.');return;}
-    btn.disabled=true;setStatus('Отправляем обращение…');
-    try{
-      const ac=new AbortController();const timer=setTimeout(()=>ac.abort(),13000);
-      let resp;try{resp=await fetch(cfg.apiBase.replace(/\/$/,'')+'/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(message),signal:ac.signal});}finally{clearTimeout(timer);}
-      const reply=await resp.json().catch(()=>({}));
-      if(!resp.ok||!reply.ok)throw new Error(reply.error||'Не удалось отправить сообщение');
-      setStatus('Заявка принята и отправлена! Мы свяжемся с вами в рабочее время.');window.kgpGoal?.('lead_success');form.reset();
-    }catch(err){setStatus('Не удалось доставить заявку. Позвоните: 8 (910) 731-02-00 или напишите на gazstroi46@mail.ru.');}
-    finally{btn.disabled=false;}
-  });
+  const status=form.querySelector('.form-status');
+  const setStatus=text=>{if(status)status.textContent=text;notify(text);};
+  const value=name=>String(form.elements.namedItem(name)?.value||'').trim();
+  const createMessage=()=>[
+    'Заявка с сайта КурскГазПром',
+    'Имя: '+value('Имя'),
+    'Телефон: '+value('Телефон'),
+    'Услуга: '+(value('Услуга')||'Не выбрана'),
+    'Населённый пункт: '+(value('Населённый пункт')||'Не указан'),
+    'Комментарий: '+(value('Комментарий')||'Нет'),
+    'Страница: '+location.href.split('?')[0].split('#')[0]
+  ].join('\n');
+  form.addEventListener('submit',e=>{e.preventDefault();setStatus('Выберите Telegram, WhatsApp или MAX, чтобы подготовить сообщение.');});
+  form.querySelectorAll('[data-messenger]').forEach(button=>button.addEventListener('click',()=>{
+    if(!form.reportValidity())return;
+    const honey=form.elements.namedItem('company_website');
+    if(honey&&honey.value)return;
+    const message=createMessage(),type=button.dataset.messenger;
+    const phone=String(cfg.messengerPhone||'79107310200').replace(/\D/g,'');
+    let url='';
+    if(type==='whatsapp'){
+      url='https://wa.me/'+phone+'?text='+encodeURIComponent(message);
+    }else if(type==='telegram'){
+      const username=String(cfg.telegramContactUsername||'').replace(/^@/,'');
+      if(username&&!/^[A-Za-z][A-Za-z0-9_]{4,31}$/.test(username)){
+        setStatus('Указан неверный Telegram username в настройках сайта.');return;
+      }
+      // Number links may be blocked by Telegram privacy settings. Prefer business username when provided.
+      url='https://t.me/'+(username||('+'+phone))+'?text='+encodeURIComponent(message);
+    }else if(type==='max'){
+      const chat=String(cfg.maxChatUrl||'').trim();
+      if(chat){
+        try{const parsed=new URL(chat);if(parsed.protocol!=='https:'||parsed.hostname!=='max.ru')throw Error('invalid');}
+        catch(e){setStatus('Некорректная ссылка на MAX в настройках сайта.');return;}
+        // A known MAX chat URL does not support reliable prefill: offer clipboard message.
+        if(navigator.clipboard?.writeText){navigator.clipboard.writeText(message).catch(()=>{});}
+        url=chat;
+      }else{
+        // MAX official share link requires user to select the recipient.
+        url='https://max.ru/:share?text='+encodeURIComponent(message);
+      }
+    }else{return;}
+    if(typeof window.kgpGoal==='function')window.kgpGoal(type+'_click');
+    setStatus(type==='max'&&!cfg.maxChatUrl
+      ?'Откроется MAX с текстом заявки. Выберите чат КурскГазПром и нажмите «Отправить».'
+      :'Сообщение подготовлено. Проверьте получателя и нажмите «Отправить» в мессенджере.');
+    // A normal navigation avoids duplicate tabs and browser popup blockers.
+    window.location.assign(url);
+  }));
 });
 
 

@@ -88,3 +88,15 @@ a.direct-call strong{font-size:14px;letter-spacing:-.015em;white-space:nowrap}
 .form-call-backup span{width:100%;font-weight:700;color:#496481}
 .form-call-backup a{color:#075ab2;font-weight:800;text-decoration:underline;text-underline-offset:2px}
 @media(max-width:520px){.direct-call-actions{grid-template-columns:1fr}.direct-call strong{font-size:15px}}
+
+/* No-server messenger lead form, corporate BLUE */
+.messenger-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:16px 0 8px}
+.messenger-send{display:flex;align-items:center;justify-content:center;gap:9px;min-height:52px;border:0;border-radius:11px;padding:12px 13px;color:white;font-weight:800;font-family:inherit;font-size:13px;cursor:pointer;transition:filter .2s,transform .2s;box-shadow:0 6px 16px rgba(20,52,94,.13)}
+.messenger-send:hover{filter:brightness(1.07);transform:translateY(-1px)}
+.messenger-send:focus-visible{outline:3px solid #182d48;outline-offset:3px}
+.messenger-tg{background:linear-gradient(125deg,#1387c6,#27a7df)}
+.messenger-wa{background:linear-gradient(125deg,#158451,#23ae71)}
+.messenger-max{background:linear-gradient(125deg,#6647d5,#8769ed)}
+.messenger-icon{font-size:11px;font-weight:900;width:26px;height:26px;border:1px solid rgba(255,255,255,.45);border-radius:50%;display:flex;align-items:center;justify-content:center;flex:0 0 26px}
+.messenger-help{display:block;font-size:12px;color:#536b84;line-height:1.6;margin:8px 0 13px}
+@media(max-width:610px){.messenger-actions{grid-template-columns:1fr}.messenger-send{width:100%;min-height:50px}}
