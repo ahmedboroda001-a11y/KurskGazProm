@@ -12,12 +12,12 @@
     m[i].l=Date.now();
     k=e.createElement(t);a=e.getElementsByTagName(t)[0];
     k.async=1;k.src=r;a.parentNode.insertBefore(k,a);
-  })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
+  })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=' + id, 'ym');
   window.ym(id, 'init', {
     clickmap: true,
     trackLinks: true,
     accurateTrackBounce: true,
-    webvisor: false
+    webvisor: true
   });
   document.addEventListener('click', function (ev) {
     const a = ev.target.closest('a[href]');
