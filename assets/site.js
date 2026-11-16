@@ -81,3 +81,51 @@ document.querySelectorAll('form[data-lead]').forEach(form=>{
  render();
 })();
 (function(){const p=new URLSearchParams(window.KGP_PREVIEW_SEARCH||location.search);if(!p.has('comment'))return;document.querySelectorAll('form[data-lead]').forEach(f=>{const c=f.querySelector('textarea[name="Комментарий"]');if(c)c.value=p.get('comment')||'';const loc=f.querySelector('[name="Населённый пункт"]');if(loc)loc.value=p.get('locality')||'';const service=f.querySelector('[name="Услуга"]');if(service){const wanted=p.get('service')||'';if([...service.options].some(o=>o.value===wanted))service.value=wanted;}});})();
+
+/* Fixed, always-visible contact panel. It works without a backend or JS-generated HTML on every page. */
+(function setupQuickMessengers(){
+  if(document.querySelector('.kgp-quick-messengers'))return;
+  const number=String(cfg.messengerPhone||'79107310200').replace(/\D/g,'');
+  const msg='Здравствуйте! Интересует газификация. Хочу получить консультацию.';
+  const uname=String(cfg.telegramContactUsername||'').replace(/^@/,'').trim();
+  const tg=uname&&/^[A-Za-z][A-Za-z0-9_]{4,31}$/.test(uname)
+    ? 'https://t.me/'+uname : 'https://t.me/+'+number;
+  const knownMax=String(cfg.maxChatUrl||'').trim();
+  const maxUrl=/^https:\/\/max\.ru\//i.test(knownMax)
+    ? knownMax : 'https://max.ru/:share?text='+encodeURIComponent(msg);
+  const dock=document.createElement('aside');
+  dock.className='kgp-quick-messengers';
+  dock.setAttribute('aria-label','Быстрая связь с КурскГазПром');
+  const heading=document.createElement('div');
+  heading.className='kgp-quick-messengers-title';
+  heading.textContent='Напишите нам';
+  dock.appendChild(heading);
+  const actions=document.createElement('div');
+  actions.className='kgp-quick-messengers-actions';
+  const options=[
+    {type:'telegram',label:'Telegram',symbol:'TG',href:tg,title:'Открыть Telegram КурскГазПром по номеру телефона (при доступности профиля)'},
+    {type:'whatsapp',label:'WhatsApp',symbol:'WA',href:'https://wa.me/'+number+'?text='+encodeURIComponent(msg),title:'Написать КурскГазПром в WhatsApp'},
+    {type:'max',label:'MAX',symbol:'М',href:maxUrl,title:knownMax?'Открыть чат КурскГазПром в MAX':'Открыть MAX: потребуется выбрать чат получателя'}
+  ];
+  options.forEach(o=>{
+    const a=document.createElement('a');
+    a.className='kgp-quick-messengers-button kgp-quick-'+o.type;
+    a.href=o.href;
+    a.target='_blank';
+    a.rel='noopener noreferrer';
+    a.title=o.title;
+    a.setAttribute('aria-label',o.title);
+    const glyph=document.createElement('span');
+    glyph.className='kgp-quick-messengers-glyph';
+    glyph.setAttribute('aria-hidden','true');
+    glyph.textContent=o.symbol;
+    const label=document.createElement('span');
+    label.textContent=o.label;
+    a.append(glyph,label);
+    a.addEventListener('click',()=>window.kgpGoal?.(o.type+'_click'));
+    actions.appendChild(a);
+  });
+  dock.appendChild(actions);
+  document.body.appendChild(dock);
+})();
+

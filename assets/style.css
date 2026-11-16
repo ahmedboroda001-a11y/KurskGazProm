@@ -100,3 +100,44 @@ a.direct-call strong{font-size:14px;letter-spacing:-.015em;white-space:nowrap}
 .messenger-icon{font-size:11px;font-weight:900;width:26px;height:26px;border:1px solid rgba(255,255,255,.45);border-radius:50%;display:flex;align-items:center;justify-content:center;flex:0 0 26px}
 .messenger-help{display:block;font-size:12px;color:#536b84;line-height:1.6;margin:8px 0 13px}
 @media(max-width:610px){.messenger-actions{grid-template-columns:1fr}.messenger-send{width:100%;min-height:50px}}
+
+/* Always-visible messenger shortcuts: blue, premium and mobile-friendly. */
+.kgp-quick-messengers{
+ position:fixed;z-index:1100;right:18px;bottom:18px;width:min(360px,calc(100% - 28px));
+ padding:11px 12px 12px;background:rgba(255,255,255,.98);
+ border:1px solid #d5e5f8;border-radius:16px;
+ box-shadow:0 12px 40px rgba(10,47,95,.20);
+ -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+}
+.kgp-quick-messengers-title{
+ font-size:12px;line-height:1.4;font-weight:800;color:#142c4b;
+ margin:0 0 8px;text-align:left;
+}
+.kgp-quick-messengers-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.kgp-quick-messengers-button{
+ display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;min-height:43px;
+ padding:9px 6px;border-radius:10px;color:#fff!important;text-decoration:none!important;
+ font-size:11px;font-weight:800;line-height:1.2;white-space:nowrap;
+ transition:transform .15s ease,filter .15s ease;
+}
+.kgp-quick-messengers-button:hover{transform:translateY(-2px);filter:brightness(1.05)}
+.kgp-quick-messengers-button:focus-visible{outline:3px solid #142c4b;outline-offset:2px}
+.kgp-quick-messengers-glyph{
+ display:grid;place-items:center;flex:none;height:23px;width:23px;border:1px solid rgba(255,255,255,.55);
+ border-radius:50%;font-size:9px;font-weight:900;
+}
+.kgp-quick-telegram{background:linear-gradient(125deg,#137fc3,#2ba7df)}
+.kgp-quick-whatsapp{background:linear-gradient(125deg,#13824e,#22ae6e)}
+.kgp-quick-max{background:linear-gradient(125deg,#6342d2,#8967ed)}
+@media(max-width:640px){
+ body{padding-bottom:106px}
+ .kgp-quick-messengers{
+  right:8px;left:8px;width:auto;bottom:calc(7px + env(safe-area-inset-bottom));
+  padding:8px 9px 9px;border-radius:13px;
+ }
+ .kgp-quick-messengers-title{margin-bottom:5px;text-align:center;font-size:11px}
+ .kgp-quick-messengers-actions{gap:6px}
+ .kgp-quick-messengers-button{padding:7px 5px;min-height:43px;font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){.kgp-quick-messengers-button{transition:none}}
+
