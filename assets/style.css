@@ -66,3 +66,25 @@
 @media(max-width:580px){.directions-layout{gap:15px}.directions-address{padding:18px}.directions-map,.directions-map iframe{min-height:305px}}
 
 .directions-coordinates{font-size:13px!important;color:#0c68c3!important;font-weight:700!important;margin-top:4px!important}
+
+
+/* Click-to-call enhancement: visible phone actions across the site */
+a[href^="tel:"]{cursor:pointer}
+.header-location a[href^="tel:"]{color:var(--ink);text-decoration:underline;text-decoration-color:#89b9f4;text-underline-offset:3px}
+.header-location a[href^="tel:"]:hover{color:var(--blue)}
+.mobile-panel a.mobile-call{display:flex;align-items:center;justify-content:center;text-align:center;padding:13px 12px;margin-top:8px;border:1px solid #cce0fa;border-radius:10px;background:#eef6ff;color:#0865c3;font-weight:800;font-size:13px}
+.mobile-panel a.mobile-call-primary{background:linear-gradient(120deg,#0469d9,#0879ef);border-color:#066fdf;color:#fff}
+.mobile-panel a.mobile-call-secondary{background:#fff}
+.contact-card .contact-intro{line-height:1.5;margin:0 0 12px;font-size:12px}
+.direct-call-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+a.direct-call{display:flex;flex-direction:column;justify-content:center;gap:7px;min-height:78px;padding:14px 12px;border:1px solid #bfd7f5;border-radius:12px;color:#0758b5;background:#fff;transition:background .15s,transform .15s;text-decoration:none}
+a.direct-call:hover{background:#e7f2ff;transform:translateY(-1px)}
+a.direct-call.primary{color:#fff;border-color:#006ddc;background:linear-gradient(120deg,#0067d5,#0879ef)}
+a.direct-call.primary:hover{background:#045dbb}
+.direct-call-title{font-size:11px;font-weight:700}
+a.direct-call strong{font-size:14px;letter-spacing:-.015em;white-space:nowrap}
+.contact-card .contact-mail{margin-top:8px}.contact-mail a,.notice a{text-decoration:underline;text-underline-offset:3px;color:#075db8;font-weight:700}
+.form-call-backup{display:flex;flex-wrap:wrap;gap:9px 14px;align-items:center;padding:12px 14px;background:#eef6ff;border:1px solid #d5e8fa;border-radius:11px;margin:14px 0 4px;font-size:12px}
+.form-call-backup span{width:100%;font-weight:700;color:#496481}
+.form-call-backup a{color:#075ab2;font-weight:800;text-decoration:underline;text-underline-offset:2px}
+@media(max-width:520px){.direct-call-actions{grid-template-columns:1fr}.direct-call strong{font-size:15px}}
